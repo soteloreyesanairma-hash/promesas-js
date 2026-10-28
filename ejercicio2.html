@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+</head>
+<body>
+  <section class="section">
+    <form action="" id="formBuscador">
+      <div class="field">
+        <input class="input" type="text" id="idnave" placeholder="Ejem. 1">
+      </div>
+      <button class="button is-primary" type="submit">Buscar</button>
+
+      <div class="field mt-4">
+        <label class="label" for="nombreNave">Nombre de la nave:</label>
+        <input class="input" type="text" id="nombreNave" readonly>
+      </div>
+
+      <div class="field">
+        <label class="label" for="modelo">Modelo de la nave:</label>
+        <input class="input" type="text" id="modelo" readonly>
+      </div>
+
+      <div class="field">
+        <label class="label" for="fabricante">Fabricante de la nave:</label>
+        <input class="input" type="text" id="fabricante" readonly>
+      </div>
+
+      <div class="field">
+        <label class="label" for="pasajeros">Pasajeros de la nave:</label>
+        <input class="input" type="text" id="pasajeros" readonly>
+      </div>
+
+      <div class="field">
+        <label class="label" for="clase">Clase de la nave:</label>
+        <input class="input" type="text" id="clase" readonly>
+      </div>
+    </form>
+  </section>
+
+<script>
+  const formulario = document.getElementById('formBuscador')
+  const id = document.getElementById('idnave') //Caja de texto
+  const nombreNave = document.getElementById('nombreNave')
+  const modelo = document.getElementById('modelo')
+  const fabricante = document.getElementById('fabricante')
+  const pasajeros = document.getElementById('pasajeros')
+  const clase = document.getElementById('clase')
+
+  formulario.addEventListener("submit", (event) => {
+    event.preventDefault()
+
+    obtenerNave(id.value)
+  })
+
+  async function obtenerNave(id){
+    const API_URL = `https://swapi.dev/api/starships/${id}`
+
+    try{
+      const respuesta = await fetch(API_URL)
+      if(!respuesta.ok) {
+        if(respuesta.status == 404){
+          nombreNave.value = ''
+          modelo.value = ''
+          fabricante.value = ''
+          pasajeros.value = ''
+          clase.value = ''
+          alert('No se encuentra esta nave')
+        }
+        throw new Error(`Error de comunicacion: ${respuesta.status}`)
+      }
+      const datos = await respuesta.json()
+
+      //Enviando resultados al formulario
+      nombreNave.value = datos.name
+      modelo.value = datos.model
+      fabricante.value = datos.manufacturer
+      pasajeros.value = datos.passengers
+      clase.value = datos.starship_class
+    }catch(e){
+      console.error(e)
+    }
+  }
+</script>
+</body>
+</html>

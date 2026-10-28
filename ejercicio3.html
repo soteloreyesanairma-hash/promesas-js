@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" id="formBuscador">
+        <div>
+            <input type="text" id="idpersonaje" placeholder="Ejem. 1">
+            <button type="submit">Buscar</button>
+        </div>
+        <div>
+            <label for="nombrePersonaje">Nombre personaje</label>
+            <input type="text" id="nombrePersonaje">
+        </div>
+    </form>
+    <div>
+        <p id="descripcion"></p>
+        <div id="contenedorImagen"></div>
+    </div>
+
+<script>
+    const formulario = document.getElementById('formBuscador')
+    const id = document.getElementById('idpersonaje')
+    const nombrePersonaje = document.getElementById('nombrePersonaje')
+    const descripcion = document.getElementById('descripcion')
+    const contenedorImagen = document.getElementById('contenedorImagen')
+
+    formulario.addEventListener("submit", (event) => {
+        event.preventDefault()
+        obtenerPersonaje(id.value)
+    })
+
+    async function obtenerPersonaje(id){
+        const API_URL = `https://dragonball-api.com/api/characters/${id}`
+
+    try{
+        const respuesta = await fetch(API_URL)
+        if(!respuesta.ok) {
+            if(respuesta.status == 404){
+            alert('No se encuentra este personaje')
+        }
+        throw new Error(`Error de comunicacion: ${respuesta.status}`)
+    }
+    const datos = await respuesta.json()
+    nombrePersonaje.value = datos.name
+    descripcion.innerHTML = datos.description
+    contenedorImagen.innerHTML = `<img src="${datos.image}" alt="${datos.name}">`
+
+    }catch(e){
+        console.error(e)
+    }
+}
+</script>
+</body>
+</html>

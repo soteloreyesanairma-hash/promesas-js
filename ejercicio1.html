@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+</head>
+<body>
+  <div class="columns is-centered">
+    <div class="column is-5">
+      <section class="section">
+        <form action="" id="formBuscador">
+          <div>
+            <input class="input is-primary" type="text"  id="idplaneta" placeholder="Ejem. 1">
+            <br><br>
+            <div class="field">
+              <button class="button is-primary" type="submit">Buscar</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="label" for="nombrePlaneta">Nombre del planeta:</label>
+            <input class="input is-primary" type="text" id="nombrePlaneta">
+          </div>
+
+          <div>
+            <label class="label" for="diametro">Diametro del planeta:</label>
+            <input class="input is-primary" type="text" id="diametro">
+          </div>
+
+          <div>
+            <label class="label" for="clima">Clima del planeta:</label>
+            <input class="input is-primary" type="text" id="clima">
+          </div>
+
+          <div>
+            <label class="label" for="terreno">Terrenos del planeta:</label>
+            <input class="input is-primary" type="text" id="terreno">
+          </div>
+
+          <div>
+            <label class="label" for="poblacion">Poblacion del planeta:</label>
+            <input class="input is-primary" type="text" id="poblacion">
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+
+<script>
+  const formulario = document.getElementById('formBuscador')
+  const id = document.getElementById('idplaneta') //Caja de texto
+  const nombrePlaneta = document.getElementById('nombrePlaneta')
+  const diametro = document.getElementById('diametro')
+  const clima = document.getElementById('clima')
+  const terreno = document.getElementById('terreno')
+  const poblacion = document.getElementById('poblacion')
+
+  //SUBMIT evento (envio)
+  formulario.addEventListener("submit", (event)=> {
+    event.preventDefault() //Detener el envio
+
+    obtenerPlaneta(id.value)
+    })
+
+
+  async function obtenerPlaneta(id){
+    const API_URL = `https://swapi.dev/api/planets/${id}`
+
+    try{
+      const respuesta = await fetch(API_URL)
+      if(!respuesta.ok) { 
+        if(respuesta.status == 404){
+          nombrePlaneta.value = ''
+          diametro.value = ''
+          clima.value = ''
+          terreno.value = ''
+          poblacion.value = ''
+          alert('No se encuentra este planeta')
+        }
+        throw new Error(`Error de comunicacion: ${respuesta.status}`) 
+        }
+      const datos = await respuesta.json()
+
+      //Enviando resultados al formulario
+      nombrePlaneta.value = datos.name
+      diametro.value = datos.diameter
+      clima.value = datos.climate
+      terreno.value = datos.terrain
+      poblacion.value = datos.population
+    }catch(e){
+      console.error(e)
+    }
+  }
+</script>
+
+</body>
+</html>
